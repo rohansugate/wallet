@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vault — Personal Finance Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="header__brand">
+        <span class="header__logo" aria-hidden="true">◈</span>
+        <div>
+          <h1 class="header__title">Vault</h1>
+          <p class="header__subtitle">Personal Finance & Expense Tracker</p>
+        </div>
+      </div>
+      <p class="header__date" id="todayDate"></p>
+    </header>
+
+    <section class="summary" aria-label="Financial overview">
+      <article class="summary-card summary-card--wallet">
+        <span class="summary-card__label">Cash on Hand</span>
+        <span class="summary-card__value" id="summaryWallet">$0.00</span>
+      </article>
+      <article class="summary-card summary-card--in">
+        <span class="summary-card__label">Owed to You</span>
+        <span class="summary-card__value" id="summaryOwedToMe">$0.00</span>
+      </article>
+      <article class="summary-card summary-card--out">
+        <span class="summary-card__label">You Owe</span>
+        <span class="summary-card__value" id="summaryIOwe">$0.00</span>
+      </article>
+      <article class="summary-card summary-card--net">
+        <span class="summary-card__label">Total Net Position</span>
+        <span class="summary-card__value" id="summaryNet">$0.00</span>
+      </article>
+    </section>
+
+    <main class="main">
+      <!-- Cash In/Out -->
+      <section class="panel" id="cashPanel">
+        <div class="panel__head">
+          <div>
+            <h2 class="panel__title">Cash In / Out</h2>
+            <p class="panel__desc">Log every deposit and withdrawal</p>
+          </div>
+          <div class="panel__stats">
+            <span class="stat stat--in">In <strong id="cashInTotal">$0</strong></span>
+            <span class="stat stat--out">Out <strong id="cashOutTotal">$0</strong></span>
+          </div>
+        </div>
+
+        <form class="form" id="cashForm" autocomplete="off">
+          <div class="form__row">
+            <label class="field">
+              <span class="field__label">Type</span>
+              <select name="type" id="cashType" required>
+                <option value="in">Cash In</option>
+                <option value="out">Cash Out</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="field__label">Amount</span>
+              <input type="number" name="amount" id="cashAmount" min="0.01" step="0.01" placeholder="0.00" required />
+            </label>
+            <label class="field field--grow">
+              <span class="field__label">Description</span>
+              <input type="text" name="description" id="cashDescription" placeholder="Salary, groceries…" maxlength="120" />
+            </label>
+            <label class="field">
+              <span class="field__label">Date</span>
+              <input type="date" name="date" id="cashDate" required />
+            </label>
+            <button type="submit" class="btn btn--primary">Add Entry</button>
+          </div>
+        </form>
+
+        <div class="list-toolbar">
+          <input type="search" class="search" id="cashSearch" placeholder="Search transactions…" />
+          <select class="filter" id="cashFilter">
+            <option value="all">All</option>
+            <option value="in">Cash In only</option>
+            <option value="out">Cash Out only</option>
+          </select>
+        </div>
+
+        <ul class="log-list" id="cashList" aria-live="polite"></ul>
+        <p class="empty" id="cashEmpty">No transactions yet. Add your first entry above.</p>
+      </section>
+
+      <!-- Debts -->
+      <section class="panel panel--debts" id="debtsPanel">
+        <div class="panel__head">
+          <div>
+            <h2 class="panel__title">Debts Track</h2>
+            <p class="panel__desc">Money others owe you vs. what you owe them</p>
+          </div>
+        </div>
+
+        <div class="debts-grid">
+          <div class="debt-col">
+            <h3 class="debt-col__title debt-col__title--in">Owed to You</h3>
+            <form class="form form--compact" id="owedToMeForm" autocomplete="off">
+              <label class="field">
+                <span class="field__label">Person</span>
+                <input type="text" name="person" placeholder="Name" required maxlength="80" />
+              </label>
+              <label class="field">
+                <span class="field__label">Amount</span>
+                <input type="number" name="amount" min="0.01" step="0.01" placeholder="0.00" required />
+              </label>
+              <label class="field field--grow">
+                <span class="field__label">Note</span>
+                <input type="text" name="note" placeholder="Optional" maxlength="120" />
+              </label>
+              <button type="submit" class="btn btn--success">Add</button>
+            </form>
+            <ul class="debt-list" id="owedToMeList"></ul>
+            <p class="empty empty--sm" id="owedToMeEmpty">No receivables recorded.</p>
+          </div>
+
+          <div class="debt-col">
+            <h3 class="debt-col__title debt-col__title--out">You Owe Others</h3>
+            <form class="form form--compact" id="iOweForm" autocomplete="off">
+              <label class="field">
+                <span class="field__label">Person</span>
+                <input type="text" name="person" placeholder="Name" required maxlength="80" />
+              </label>
+              <label class="field">
+                <span class="field__label">Amount</span>
+                <input type="number" name="amount" min="0.01" step="0.01" placeholder="0.00" required />
+              </label>
+              <label class="field field--grow">
+                <span class="field__label">Note</span>
+                <input type="text" name="note" placeholder="Optional" maxlength="120" />
+              </label>
+              <button type="submit" class="btn btn--danger">Add</button>
+            </form>
+            <ul class="debt-list" id="iOweList"></ul>
+            <p class="empty empty--sm" id="iOweEmpty">No payables recorded.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wallet -->
+      <section class="panel panel--wallet" id="walletPanel">
+        <div class="panel__head">
+          <div>
+            <h2 class="panel__title">Cash on Hand</h2>
+            <p class="panel__desc">Auto-synced from your Cash In/Out log below</p>
+          </div>
+        </div>
+
+        <div class="wallet-display">
+          <div class="wallet-ring" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <circle class="wallet-ring__bg" cx="60" cy="60" r="52" />
+              <circle class="wallet-ring__fill" id="walletRing" cx="60" cy="60" r="52" />
+            </svg>
+          </div>
+          <div class="wallet-balance">
+            <span class="wallet-balance__label">Current Balance</span>
+            <span class="wallet-balance__amount" id="walletDisplay">$0.00</span>
+            <span class="wallet-balance__hint" id="walletHint"></span>
+          </div>
+        </div>
+
+        <div class="wallet-breakdown" id="walletBreakdown" aria-live="polite"></div>
+
+        <form class="form form--wallet" id="walletForm" autocomplete="off">
+          <p class="form__section-label">Optional — only if cash log doesn’t match your bank</p>
+          <div class="form__row">
+            <label class="field field--grow">
+              <span class="field__label">Set exact balance</span>
+              <input type="number" name="setBalance" id="setBalance" step="0.01" placeholder="Override to exact amount" />
+            </label>
+            <button type="submit" name="action" value="set" class="btn btn--ghost">Set Balance</button>
+          </div>
+          <div class="form__row">
+            <label class="field">
+              <span class="field__label">Adjust by</span>
+              <input type="number" name="adjustAmount" id="adjustAmount" step="0.01" placeholder="+/- amount" />
+            </label>
+            <label class="field field--grow">
+              <span class="field__label">Reason</span>
+              <input type="text" name="adjustNote" id="adjustNote" placeholder="Bank sync, correction…" maxlength="120" />
+            </label>
+            <button type="submit" name="action" value="adjust" class="btn btn--primary">Apply Adjustment</button>
+          </div>
+        </form>
+
+        <ul class="log-list log-list--compact" id="walletHistory"></ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>Data saved locally in your browser · <button type="button" class="link-btn" id="exportBtn">Export backup</button> · <button type="button" class="link-btn link-btn--danger" id="resetBtn">Reset all data</button></p>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
